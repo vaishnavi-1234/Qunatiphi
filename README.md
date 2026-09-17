@@ -1,137 +1,357 @@
-# TaskPulse — Production MERN Task Management Application
+# 🚀 TaskPulse — MERN Task Management Application
 
-A full-stack, responsive, production-quality Task Management Application built using the **MERN Stack** (MongoDB, Express.js, React.js, Node.js) featuring a 3-column Kanban board, live Drag & Drop with database persistence, project membership & permission controls, and an **Automated Workload Balancing Engine** that dynamically detects overloaded team members.
+> A modern, full-stack task management platform with Kanban workflow, drag-and-drop task organization, project-based collaboration, role-based access control, and intelligent workload monitoring.
 
----
+**TaskPulse** is a production-style task management application built using the **MERN stack** — MongoDB, Express.js, React.js, and Node.js.
 
-## 🌟 Key Features
+It provides teams with a centralized workspace to create, assign, organize, track, and manage tasks through an interactive **Kanban board**.
 
-- **Interactive Kanban Board**:
-  - Three distinct status columns: **TO-DO**, **IN PROGRESS**, and **DONE**.
-  - Dynamic task count badges for every column (e.g. `TO-DO (4)`, `IN PROGRESS (7)`, `DONE (12)`).
-  - Native HTML5 Drag and Drop with instant optimistic UI update and MongoDB persistence via `PATCH /api/tasks/:id/status`.
-- **Special Feature — Dynamic Workload Balancing**:
-  - Automatically calculates `inProgressCount` for each project team member directly from MongoDB.
-  - If **ANY** user has **more than 5 tasks** assigned to them in the **"In Progress"** state:
-    - Their avatar in the team panel **pulses continuously** with a vivid red warning glow (`@keyframes workloadPulse`).
-    - An alert badge `⚠ X In Progress` is displayed next to their name.
-    - An overload warning banner alerts the team.
-  - Recalculates dynamically whenever tasks are moved, reassigned, created, or deleted.
-- **Priority Filtering**:
-  - Instant live filtering by `All`, `Low`, `Medium`, and `High` without page reload.
-  - Column counter badges dynamically update to reflect the currently visible filtered tasks.
-- **Project Management & Access Control**:
-  - Multi-project support with Project Switcher and Dashboard overview.
-  - Role-based permissions: Project Owners can add/remove members and manage project settings; members can view, create, edit, and move tasks.
-  - Non-members are strictly forbidden with HTTP 403.
-- **Full Task CRUD**:
-  - Create, view, edit, and delete tasks with titles, descriptions, priorities, due dates, and assignee selection.
-  - Confirmation modals for safe deletions.
-- **Secure Authentication**:
-  - JWT (JSON Web Tokens) authentication with Bearer tokens stored in localStorage.
-  - Passwords hashed using `bcryptjs` with 10 salt rounds. Passwords are never returned in JSON responses.
-- **Production UI/UX**:
-  - Modern SaaS aesthetic with custom dark/slate palette, glassmorphism accents, smooth micro-interactions, responsive drawer sidebar, and empty/loading states.
+The application's key differentiating feature is **Workload Balancing**, which automatically detects when a team member has more than **5 tasks in progress** and visually warns the team using a pulsing red avatar indicator.
 
 ---
 
-## 🛠️ Tech Stack
+## ✨ Features
 
-- **Frontend**:
-  - React 18
-  - Vite 5
-  - React Router DOM 6
-  - Axios (with request/response interceptors)
-  - Lucide React (clean SaaS iconography)
-  - Pure Vanilla CSS design system with CSS custom variables
-- **Backend**:
-  - Node.js (v22+)
-  - Express.js 4
-  - MongoDB & Mongoose 8
-  - JSON Web Tokens (`jsonwebtoken`)
-  - Password Hashing (`bcryptjs`)
-  - CORS & Dotenv
+### 📋 Interactive Kanban Board
 
----
+Manage tasks using three workflow stages:
 
-## 📁 Folder Structure
+* 📝 **To-Do**
+* 🔄 **In Progress**
+* ✅ **Done**
 
+Features include:
+
+* Drag-and-drop task movement
+* Persistent task status updates
+* Dynamic task counters
+* Optimistic UI updates
+* Automatic synchronization with MongoDB
+
+Example:
+
+```text
+┌─────────────────┐
+│ TO-DO       4   │
+├─────────────────┤
+│ Design Login    │
+│ Create API      │
+│ Fix Navbar      │
+│ Write Tests     │
+└─────────────────┘
+
+┌─────────────────┐
+│ IN PROGRESS  7  │
+├─────────────────┤
+│ Build Dashboard │
+│ Database Setup  │
+│ Authentication  │
+└─────────────────┘
+
+┌─────────────────┐
+│ DONE        12  │
+└─────────────────┘
 ```
+
+---
+
+## 🔥 Workload Balancing
+
+TaskPulse includes an automated workload monitoring system designed to highlight potentially overloaded team members.
+
+For every project member, the system calculates:
+
+```text
+In Progress Tasks =
+Tasks assigned to user
+AND
+Task status = "in-progress"
+```
+
+### ⚠️ Overload Threshold
+
+If:
+
+```text
+In Progress Tasks > 5
+```
+
+the user is considered overloaded.
+
+Their avatar automatically:
+
+* 🔴 Pulses with a red warning glow
+* ⚠️ Displays an overload indicator
+* 📊 Shows the number of In Progress tasks
+* 🔄 Updates dynamically whenever task assignments or statuses change
+
+Example:
+
+```text
+TEAM
+
+👤 Vaishnavi
+   2 In Progress
+
+🔴 Rahul
+   ⚠ 7 In Progress
+
+👤 Priya
+   4 In Progress
+```
+
+The workload calculation is updated when tasks are:
+
+* Created
+* Deleted
+* Reassigned
+* Moved into In Progress
+* Moved out of In Progress
+
+---
+
+## 🎯 Priority Management
+
+Every task can have one of three priorities:
+
+* 🟢 **Low**
+* 🟡 **Medium**
+* 🔴 **High**
+
+Users can instantly filter tasks by:
+
+```text
+All | Low | Medium | High
+```
+
+The Kanban counters dynamically update according to the currently visible tasks.
+
+---
+
+## 👥 Team & Project Management
+
+TaskPulse supports multiple projects and team collaboration.
+
+### Project Features
+
+* Create projects
+* View projects
+* Switch between projects
+* Add team members
+* Remove team members
+* Manage project membership
+* Assign tasks to project members
+
+### Permission System
+
+Project owners can:
+
+* Add members
+* Remove members
+* Update project settings
+* Delete projects
+* Manage project resources
+
+Project members can:
+
+* View projects
+* Create tasks
+* Edit tasks
+* Move tasks
+* Manage assigned tasks
+
+Unauthorized users are prevented from accessing projects through backend authorization checks.
+
+---
+
+## ✅ Task Management
+
+Each task contains:
+
+| Property    | Description                 |
+| ----------- | --------------------------- |
+| Title       | Task name                   |
+| Description | Detailed task information   |
+| Priority    | Low, Medium, or High        |
+| Status      | To-Do, In Progress, or Done |
+| Due Date    | Task deadline               |
+| Assignee    | Team member responsible     |
+| Project     | Associated project          |
+| Created By  | User who created the task   |
+
+### Task Operations
+
+* Create
+* View
+* Edit
+* Delete
+* Assign
+* Reassign
+* Change priority
+* Change due date
+* Change status
+
+Task deletion includes a confirmation dialog to prevent accidental deletion.
+
+---
+
+# 🛠️ Tech Stack
+
+## Frontend
+
+* **React 18**
+* **Vite 5**
+* **React Router DOM 6**
+* **Axios**
+* **Lucide React**
+* **Vanilla CSS**
+* React Context API
+
+## Backend
+
+* **Node.js**
+* **Express.js 4**
+* **MongoDB**
+* **Mongoose 8**
+* **JSON Web Token (JWT)**
+* **bcryptjs**
+* **CORS**
+* **dotenv**
+
+The frontend and backend are maintained as separate applications and communicate through REST APIs.
+
+---
+
+# 🏗️ System Architecture
+
+```text
+                    ┌──────────────────────┐
+                    │      React App       │
+                    │      Frontend        │
+                    │                      │
+                    │  Kanban Board        │
+                    │  Task Cards          │
+                    │  Team Management     │
+                    │  Workload UI         │
+                    └──────────┬───────────┘
+                               │
+                         REST API / Axios
+                               │
+                               ▼
+                    ┌──────────────────────┐
+                    │    Express Server    │
+                    │       Backend        │
+                    │                      │
+                    │ Authentication       │
+                    │ Authorization        │
+                    │ Task CRUD             │
+                    │ Project Management   │
+                    │ Workload Aggregation │
+                    └──────────┬───────────┘
+                               │
+                           Mongoose
+                               │
+                               ▼
+                    ┌──────────────────────┐
+                    │       MongoDB        │
+                    │                      │
+                    │ Users                │
+                    │ Projects             │
+                    │ Tasks                │
+                    └──────────────────────┘
+```
+
+---
+
+# 📁 Project Structure
+
+```text
 task-management-app/
 │
 ├── frontend/
 │   ├── public/
-│   │   └── favicon.svg
 │   ├── src/
 │   │   ├── components/
-│   │   │   ├── Navbar.jsx               # Navigation bar with user profile & quick action
-│   │   │   ├── Sidebar.jsx              # Navigation drawer & projects switcher
-│   │   │   ├── KanbanBoard.jsx          # 3-column Kanban container
-│   │   │   ├── KanbanColumn.jsx         # Column with drop-target handling & task counters
-│   │   │   ├── TaskCard.jsx             # Draggable task card with priority badge & assignee
-│   │   │   ├── CreateTaskModal.jsx      # Task creation modal with validation
-│   │   │   ├── EditTaskModal.jsx        # Task update modal
-│   │   │   ├── AddUserModal.jsx         # Invite member modal
-│   │   │   ├── CreateProjectModal.jsx   # New project creation modal
-│   │   │   ├── DeleteConfirmModal.jsx   # Deletion confirmation dialog
-│   │   │   ├── TeamList.jsx             # Team workload sidebar panel
-│   │   │   ├── TeamMember.jsx           # Member avatar with pulsing red overload effect
-│   │   │   ├── PriorityFilter.jsx       # Filter pills (All, Low, Medium, High)
-│   │   │   ├── ProjectSelector.jsx      # Active project selector
-│   │   │   ├── WorkloadIndicator.jsx    # Workload health summary badge
-│   │   │   └── LoadingSpinner.jsx       # SaaS loading spinner
+│   │   │   ├── Navbar.jsx
+│   │   │   ├── Sidebar.jsx
+│   │   │   ├── KanbanBoard.jsx
+│   │   │   ├── KanbanColumn.jsx
+│   │   │   ├── TaskCard.jsx
+│   │   │   ├── CreateTaskModal.jsx
+│   │   │   ├── EditTaskModal.jsx
+│   │   │   ├── AddUserModal.jsx
+│   │   │   ├── CreateProjectModal.jsx
+│   │   │   ├── DeleteConfirmModal.jsx
+│   │   │   ├── TeamList.jsx
+│   │   │   ├── TeamMember.jsx
+│   │   │   ├── PriorityFilter.jsx
+│   │   │   ├── ProjectSelector.jsx
+│   │   │   ├── WorkloadIndicator.jsx
+│   │   │   └── LoadingSpinner.jsx
+│   │   │
 │   │   ├── pages/
-│   │   │   ├── Login.jsx                # Login page with demo account quick-fill buttons
-│   │   │   ├── Register.jsx             # Registration page
-│   │   │   ├── Dashboard.jsx            # Project overview & workspace metrics
-│   │   │   └── ProjectPage.jsx          # Main Kanban board & team workload view
+│   │   │   ├── Login.jsx
+│   │   │   ├── Register.jsx
+│   │   │   ├── Dashboard.jsx
+│   │   │   └── ProjectPage.jsx
+│   │   │
 │   │   ├── services/
-│   │   │   ├── api.js                   # Axios client with auth interceptor
-│   │   │   ├── authService.js           # Authentication API calls
-│   │   │   ├── projectService.js        # Project and workload API calls
-│   │   │   ├── taskService.js           # Task CRUD & patch API calls
-│   │   │   └── userService.js           # Users search API calls
+│   │   │   ├── api.js
+│   │   │   ├── authService.js
+│   │   │   ├── projectService.js
+│   │   │   ├── taskService.js
+│   │   │   └── userService.js
+│   │   │
 │   │   ├── context/
-│   │   │   ├── AuthContext.jsx          # Authentication state provider
-│   │   │   └── ProjectContext.jsx       # Projects state provider
+│   │   │   ├── AuthContext.jsx
+│   │   │   └── ProjectContext.jsx
+│   │   │
 │   │   ├── hooks/
-│   │   │   └── useTasks.js              # Hook managing tasks, drag & drop, and workload
+│   │   │   └── useTasks.js
+│   │   │
 │   │   ├── utils/
-│   │   │   └── constants.js             # Priorities, statuses, threshold constants
-│   │   ├── App.jsx                      # App routing with Protected & Guest routes
-│   │   ├── main.jsx                     # Vite React root mount
-│   │   └── index.css                    # Design tokens & workloadPulse keyframes
+│   │   │   └── constants.js
+│   │   │
+│   │   ├── App.jsx
+│   │   ├── main.jsx
+│   │   └── index.css
+│   │
 │   ├── package.json
 │   ├── vite.config.js
-│   ├── index.html
 │   ├── .env
 │   └── .env.example
 │
 ├── backend/
 │   ├── config/
-│   │   └── db.js                        # Mongoose connection
+│   │   └── db.js
+│   │
 │   ├── controllers/
-│   │   ├── authController.js            # Register, Login, GetMe
-│   │   ├── userController.js            # User listing & search
-│   │   ├── projectController.js         # Project CRUD, Members, Workload aggregation
-│   │   └── taskController.js            # Task CRUD, Status patch, Assign patch
+│   │   ├── authController.js
+│   │   ├── userController.js
+│   │   ├── projectController.js
+│   │   └── taskController.js
+│   │
 │   ├── middleware/
-│   │   ├── authMiddleware.js            # JWT verification & req.user attachment
-│   │   ├── errorMiddleware.js           # Centralized JSON error handling
-│   │   └── projectPermissionMiddleware.js# Project access authorization
+│   │   ├── authMiddleware.js
+│   │   ├── errorMiddleware.js
+│   │   └── projectPermissionMiddleware.js
+│   │
 │   ├── models/
-│   │   ├── User.js                      # User schema with bcrypt pre-save hook
-│   │   ├── Project.js                   # Project schema (owner, members refs)
-│   │   └── Task.js                      # Task schema (title, priority, status, assignee)
+│   │   ├── User.js
+│   │   ├── Project.js
+│   │   └── Task.js
+│   │
 │   ├── routes/
 │   │   ├── authRoutes.js
 │   │   ├── userRoutes.js
 │   │   ├── projectRoutes.js
 │   │   └── taskRoutes.js
+│   │
 │   ├── utils/
-│   │   └── generateToken.js             # JWT token signer
-│   ├── seed.js                          # Database seeder with overloaded user scenario
-│   ├── server.js                        # Express server entry point
+│   │   └── generateToken.js
+│   │
+│   ├── seed.js
+│   ├── server.js
 │   ├── package.json
 │   ├── .env
 │   └── .env.example
@@ -142,162 +362,642 @@ task-management-app/
 
 ---
 
-## ⚙️ Environment Variables
+# 🔐 Authentication & Security
 
-### Backend (`backend/.env`)
+TaskPulse uses JWT-based authentication.
+
+### Registration
+
+```text
+User
+ ↓
+Registration Form
+ ↓
+Express API
+ ↓
+Validate Input
+ ↓
+Hash Password using bcryptjs
+ ↓
+Store User in MongoDB
+ ↓
+Generate JWT
+ ↓
+Authenticated Session
+```
+
+### Login
+
+```text
+Email + Password
+       ↓
+Express API
+       ↓
+Find User
+       ↓
+Verify bcrypt Hash
+       ↓
+Generate JWT
+       ↓
+Return Authentication Data
+```
+
+Passwords are hashed using **bcryptjs with 10 salt rounds**, and password fields are excluded from API responses.
+
+Protected routes require a valid Bearer token.
+
+---
+
+# 🗄️ Database Models
+
+## User
+
+```javascript
+{
+  name: String,
+  email: String,
+  password: String,
+  avatar: String,
+  createdAt: Date
+}
+```
+
+## Project
+
+```javascript
+{
+  name: String,
+  description: String,
+  owner: ObjectId,
+  members: [ObjectId],
+  createdAt: Date,
+  updatedAt: Date
+}
+```
+
+## Task
+
+```javascript
+{
+  title: String,
+  description: String,
+  priority: String,
+  status: String,
+  dueDate: Date,
+  project: ObjectId,
+  assignedTo: ObjectId,
+  createdBy: ObjectId,
+  createdAt: Date,
+  updatedAt: Date
+}
+```
+
+---
+
+# 📡 REST API
+
+## Authentication
+
+| Method | Endpoint             | Description      |
+| ------ | -------------------- | ---------------- |
+| POST   | `/api/auth/register` | Register user    |
+| POST   | `/api/auth/login`    | Login user       |
+| GET    | `/api/auth/me`       | Get current user |
+
+## Users
+
+| Method | Endpoint         | Description       |
+| ------ | ---------------- | ----------------- |
+| GET    | `/api/users`     | List/search users |
+| GET    | `/api/users/:id` | Get user          |
+
+## Projects
+
+| Method | Endpoint                            | Description         |
+| ------ | ----------------------------------- | ------------------- |
+| POST   | `/api/projects`                     | Create project      |
+| GET    | `/api/projects`                     | Get user's projects |
+| GET    | `/api/projects/:id`                 | Get project         |
+| PUT    | `/api/projects/:id`                 | Update project      |
+| DELETE | `/api/projects/:id`                 | Delete project      |
+| POST   | `/api/projects/:id/members`         | Add member          |
+| DELETE | `/api/projects/:id/members/:userId` | Remove member       |
+| GET    | `/api/projects/:projectId/workload` | Get workload data   |
+
+## Tasks
+
+| Method | Endpoint                | Description        |
+| ------ | ----------------------- | ------------------ |
+| POST   | `/api/tasks`            | Create task        |
+| GET    | `/api/tasks`            | Get project tasks  |
+| GET    | `/api/tasks/:id`        | Get task           |
+| PUT    | `/api/tasks/:id`        | Update task        |
+| DELETE | `/api/tasks/:id`        | Delete task        |
+| PATCH  | `/api/tasks/:id/status` | Update task status |
+| PATCH  | `/api/tasks/:id/assign` | Reassign task      |
+
+The status endpoint is used by the Kanban drag-and-drop functionality, while the workload endpoint returns the calculated `inProgressCount`, total task count, and overload status.
+
+---
+
+# ⚙️ Environment Variables
+
+## Backend
+
+Create:
+
+```text
+backend/.env
+```
+
 ```env
 PORT=5000
 MONGO_URI=mongodb://127.0.0.1:27017/taskmanager
-JWT_SECRET=super_secret_jwt_key_task_manager_2026_secure
+JWT_SECRET=your_secure_jwt_secret
 ```
 
-### Frontend (`frontend/.env`)
+## Frontend
+
+Create:
+
+```text
+frontend/.env
+```
+
 ```env
 VITE_API_URL=http://127.0.0.1:5000/api
 ```
 
+> Never commit real `.env` files or production secrets to GitHub.
+
+The repository includes `.env.example` files to document the required configuration.
+
 ---
 
-## 🚀 Installation & Running Locally
+# 🚀 Installation & Setup
 
-### Prerequisites
-- Node.js (v18 or v20 or v22+)
-- MongoDB running locally on port 27017 (e.g. `mongodb://127.0.0.1:27017`)
+## Prerequisites
 
-### 1. Backend Setup
-In your first terminal:
+Make sure you have installed:
+
+* Node.js
+* npm
+* MongoDB
+* Git
+
+The project supports modern Node.js versions; the documented implementation uses Node.js 22+.
+
+---
+
+## 1️⃣ Clone the Repository
+
+```bash
+git clone https://github.com/YOUR_USERNAME/task-management-app.git
+```
+
+```bash
+cd task-management-app
+```
+
+---
+
+## 2️⃣ Setup Backend
+
 ```bash
 cd backend
-npm install
-npm run seed       # Seeds demo projects, tasks, and overloaded user scenario
-npm run dev        # Starts Express server on http://127.0.0.1:5000
 ```
 
-### 2. Frontend Setup
-In your second terminal:
+Install dependencies:
+
+```bash
+npm install
+```
+
+Configure your `.env` file.
+
+Then seed the database:
+
+```bash
+npm run seed
+```
+
+Start the backend:
+
+```bash
+npm run dev
+```
+
+Backend:
+
+```text
+http://127.0.0.1:5000
+```
+
+---
+
+## 3️⃣ Setup Frontend
+
+Open another terminal:
+
 ```bash
 cd frontend
+```
+
+Install dependencies:
+
+```bash
 npm install
-npm run dev        # Starts Vite dev server on http://localhost:5173
 ```
 
-Open your browser to: **`http://localhost:5173`**
+Configure:
+
+```env
+VITE_API_URL=http://127.0.0.1:5000/api
+```
+
+Start the frontend:
+
+```bash
+npm run dev
+```
+
+Frontend:
+
+```text
+http://localhost:5173
+```
 
 ---
 
-## 🔑 Demo Login Credentials
+# 🔑 Demo Accounts
 
-The seed script automatically provisions the following demo accounts (all with password: `password123`):
+The database seed script creates demo users for testing.
 
-| User | Email | Role | Initial In-Progress Tasks | Status / Visual Behavior |
-|---|---|---|:---:|---|
-| **Vaishnavi** | `vaishnavi@example.com` | Project Owner | 2 | Normal Avatar |
-| **Rahul** | `rahul@example.com` | Team Member | **7** | **OVERLOADED! Pulses Red continuously with `⚠ 7 In Progress`** |
-| **Priya** | `priya@example.com` | Team Member | 4 | Normal Avatar |
-| **Alex Johnson** | `alex@example.com` | Team Member | 1 | Normal Avatar |
+All demo accounts use:
 
-> **Tip**: The login page contains 1-click **Quick-Login Demo Accounts** buttons to instantly log into any of the above personas without typing!
+```text
+Password: password123
+```
 
----
+| User         | Email                   | Role          | In Progress |
+| ------------ | ----------------------- | ------------- | ----------: |
+| Vaishnavi    | `vaishnavi@example.com` | Project Owner |           2 |
+| Rahul        | `rahul@example.com`     | Team Member   |    **7 ⚠️** |
+| Priya        | `priya@example.com`     | Team Member   |           4 |
+| Alex Johnson | `alex@example.com`      | Team Member   |           1 |
 
-## ⚡ Workload Balancing Logic & Verification
+Rahul is intentionally seeded with **7 In Progress tasks** to demonstrate the Workload Balancing feature.
 
-### The Rule
-- For every project member, calculate the number of tasks where `assignedTo == member.id` and `status == "in-progress"`.
-- If `inProgressCount > 5`, the user is **Overloaded**:
-  - Their avatar applies the `@keyframes workloadPulse` animation.
-  - A red warning glow surrounds their avatar.
-  - An overload warning pill `⚠ X In Progress` is displayed.
-- If `inProgressCount <= 5`, the avatar renders normally.
-
-### Verification Scenarios Tested:
-1. **Initial State**: Rahul has 7 In Progress tasks -> Avatar **pulses red**.
-2. **Move 1 task to Done (7 → 6)**: In-progress count drops to 6 -> Count is still > 5 -> Avatar **still pulses red**.
-3. **Move 2nd task to Done (6 → 5)**: In-progress count drops to 5 -> Count is <= 5 -> Red pulse **disappears immediately**!
-4. **Move task back to In Progress (5 → 6)**: In-progress count increments to 6 -> Red pulse **re-triggers immediately**!
-5. **Reassignment / Creation / Deletion**: Any change to tasks automatically updates the workload data and re-evaluates the threshold.
+The login page also provides quick-login options for the demo accounts.
 
 ---
 
-## 📡 REST API Documentation
+# 🧠 Workload Balancing Logic
 
-### Auth Routes (`/api/auth`)
-- `POST /api/auth/register` — Register new user (returns user data and JWT)
-- `POST /api/auth/login` — Login user (returns user data and JWT)
-- `GET /api/auth/me` — Get profile of authenticated user
+The core workload calculation follows:
 
-### User Routes (`/api/users`)
-- `GET /api/users` — List registered users (supports `?search=` query)
-- `GET /api/users/:id` — Get user by ID
-
-### Project Routes (`/api/projects`)
-- `POST /api/projects` — Create project (user becomes owner & member)
-- `GET /api/projects` — Get all projects where user is owner or member
-- `GET /api/projects/:id` — Get project details
-- `PUT /api/projects/:id` — Update project (Owner only)
-- `DELETE /api/projects/:id` — Delete project and its tasks (Owner only)
-- `POST /api/projects/:id/members` — Add member to project (Owner only)
-- `DELETE /api/projects/:id/members/:userId` — Remove member (Owner only)
-- `GET /api/projects/:projectId/workload` — **Workload Aggregation Endpoint** (returns `inProgressCount`, `totalTaskCount`, `overloaded`)
-
-### Task Routes (`/api/tasks`)
-- `POST /api/tasks` — Create new task
-- `GET /api/tasks?project=:projectId&priority=&status=` — Get tasks for project with filters
-- `GET /api/tasks/:id` — Get single task
-- `PUT /api/tasks/:id` — Update task details
-- `DELETE /api/tasks/:id` — Delete task
-- `PATCH /api/tasks/:id/status` — Move task status (**drag & drop endpoint**)
-- `PATCH /api/tasks/:id/assign` — Reassign task to user
-
----
-
-## 🛡️ Database Models
-
-### User
 ```javascript
-{
-  name: { type: String, required: true },
-  email: { type: String, required: true, unique: true },
-  password: { type: String, required: true }, // Hashed with bcrypt
-  avatar: { type: String },
-  createdAt: { type: Date, default: Date.now }
+inProgressCount =
+    number of tasks assigned to user
+    where status === "in-progress";
+```
+
+Then:
+
+```javascript
+if (inProgressCount > 5) {
+    overloaded = true;
+} else {
+    overloaded = false;
 }
 ```
 
-### Project
-```javascript
-{
-  name: { type: String, required: true },
-  description: { type: String },
-  owner: { type: ObjectId, ref: 'User', required: true },
-  members: [{ type: ObjectId, ref: 'User' }],
-  createdAt: Date,
-  updatedAt: Date
-}
+### Example
+
+```text
+Rahul
+
+Task 1 → In Progress
+Task 2 → In Progress
+Task 3 → In Progress
+Task 4 → In Progress
+Task 5 → In Progress
+Task 6 → In Progress
+Task 7 → In Progress
+
+inProgressCount = 7
+
+7 > 5
+    ↓
+OVERLOADED
+    ↓
+🔴 Pulsing Avatar
 ```
 
-### Task
-```javascript
-{
-  title: { type: String, required: true },
-  description: { type: String },
-  priority: { type: String, enum: ['Low', 'Medium', 'High'], default: 'Medium' },
-  status: { type: String, enum: ['todo', 'in-progress', 'done'], default: 'todo' },
-  dueDate: Date,
-  project: { type: ObjectId, ref: 'Project', required: true },
-  assignedTo: { type: ObjectId, ref: 'User' },
-  createdBy: { type: ObjectId, ref: 'User', required: true },
-  createdAt: Date,
-  updatedAt: Date
-}
+If Rahul completes two tasks:
+
+```text
+7 → 6 → 5
+```
+
+At exactly **5 tasks**, the warning disappears because:
+
+```text
+5 > 5 = false
+```
+
+The threshold behavior and verification scenarios are implemented around this rule.
+
+---
+
+# 🧪 Feature Verification
+
+The application can be tested using the following scenarios:
+
+### Test 1 — Initial Workload
+
+Rahul starts with:
+
+```text
+7 In Progress
+```
+
+Expected:
+
+```text
+🔴 Avatar pulses
+⚠ 7 In Progress
+```
+
+### Test 2 — Move Task to Done
+
+```text
+7 → 6
+```
+
+Expected:
+
+```text
+🔴 Still overloaded
+```
+
+### Test 3 — Reach Threshold
+
+```text
+6 → 5
+```
+
+Expected:
+
+```text
+Normal avatar
+No overload warning
+```
+
+### Test 4 — Move Back to In Progress
+
+```text
+5 → 6
+```
+
+Expected:
+
+```text
+🔴 Pulse starts again
+```
+
+### Test 5 — Reassignment
+
+```text
+User A: 6 → 5
+User B: 4 → 5
+```
+
+Expected:
+
+```text
+User A → No overload
+User B → No overload
+```
+
+### Test 6 — Task Creation/Deletion
+
+Creating or deleting an In Progress task automatically recalculates the affected workload.
+
+---
+
+# 🎨 UI/UX
+
+TaskPulse follows a modern SaaS-style design with:
+
+* Dark/slate visual theme
+* Glassmorphism-inspired elements
+* Responsive sidebar
+* Responsive Kanban layout
+* Smooth transitions
+* Interactive task cards
+* Priority indicators
+* Loading states
+* Empty states
+* Confirmation modals
+* Workload warning animations
+
+The frontend uses a custom CSS design system with reusable design variables and workload animation styles.
+
+---
+
+# 📱 Responsive Design
+
+TaskPulse is designed to work across:
+
+* 💻 Desktop
+* 💻 Laptop
+* 📱 Tablet
+* 📱 Mobile
+
+On smaller screens, the navigation and Kanban layout adapt to preserve usability.
+
+---
+
+# 🛡️ Security Considerations
+
+The application implements:
+
+* JWT authentication
+* Password hashing
+* Protected API routes
+* Project-level authorization
+* Input validation
+* Environment-based configuration
+* CORS configuration
+* Centralized backend error handling
+* Password exclusion from API responses
+
+Never commit:
+
+```text
+.env
+```
+
+or production credentials to GitHub.
+
+---
+
+# 🔄 Application Flow
+
+```text
+              LOGIN / REGISTER
+                     │
+                     ▼
+              JWT Authentication
+                     │
+                     ▼
+                 Dashboard
+                     │
+                     ▼
+              Select Project
+                     │
+          ┌──────────┴──────────┐
+          ▼                     ▼
+      Kanban Board           Team Panel
+          │                     │
+          ▼                     ▼
+    Create / Edit /       Workload Calculation
+    Delete / Assign             │
+          │                     ▼
+          ▼              inProgressCount > 5
+      Drag & Drop               │
+          │                     ▼
+          ▼                🔴 Warning Pulse
+       MongoDB
 ```
 
 ---
 
-## 💡 Troubleshooting
+# 📈 Future Enhancements
 
-- **MongoDB Connection**: If MongoDB is running on IPv4, ensure `MONGO_URI=mongodb://127.0.0.1:27017/taskmanager` is used to prevent Windows Node 18+ IPv6 `::1` resolution conflicts.
-- **PowerShell Script Policy on Windows**: If `npm` commands report that `npm.ps1 cannot be loaded`, run `npm.cmd <command>` or `cmd.exe /c npm <command>`.
-- **CORS Errors**: The backend server is configured with CORS enabled for `*` with credentials support.
-#   Q u n a t i p h i  
- 
+Potential future improvements include:
+
+* Real-time collaboration using Socket.IO
+* Email notifications
+* Task comments
+* File attachments
+* Activity/audit history
+* Advanced analytics dashboard
+* Calendar view
+* Recurring tasks
+* Team workload charts
+* Dark/light theme switcher
+* Search across tasks
+* Task labels/tags
+* Due-date notifications
+* Cloud deployment
+* Docker support
+
+---
+
+# 🤝 Contributing
+
+Contributions are welcome.
+
+### 1. Fork the repository
+
+### 2. Create a feature branch
+
+```bash
+git checkout -b feature/your-feature
+```
+
+### 3. Commit your changes
+
+```bash
+git commit -m "Add your feature"
+```
+
+### 4. Push the branch
+
+```bash
+git push origin feature/your-feature
+```
+
+### 5. Open a Pull Request
+
+---
+
+# 🐛 Troubleshooting
+
+### MongoDB connection error
+
+Make sure MongoDB is running and your connection string uses:
+
+```env
+MONGO_URI=mongodb://127.0.0.1:27017/taskmanager
+```
+
+Using `127.0.0.1` can help avoid IPv6 `::1` resolution issues on some Windows setups.
+
+### CORS error
+
+Verify that:
+
+* Backend is running on port `5000`
+* Frontend is running on port `5173`
+* `VITE_API_URL` points to the backend API
+
+### npm command issue on Windows
+
+If PowerShell blocks `npm.ps1`, you can use:
+
+```bash
+npm.cmd install
+```
+
+or run the command through:
+
+```bash
+cmd.exe /c npm install
+```
+
+---
+
+# 📊 Project Highlights
+
+| Area               | Implementation     |
+| ------------------ | ------------------ |
+| Architecture       | MERN               |
+| Frontend           | React + Vite       |
+| Backend            | Node + Express     |
+| Database           | MongoDB            |
+| Authentication     | JWT                |
+| Password Security  | bcryptjs           |
+| API                | REST               |
+| Task Organization  | Kanban             |
+| Drag & Drop        | HTML5              |
+| Workload Detection | Dynamic            |
+| Priority Filter    | Yes                |
+| Project Management | Yes                |
+| Team Management    | Yes                |
+| Authorization      | Role/Project based |
+| Responsive UI      | Yes                |
+
+---
+
+# 👩‍💻 Author
+
+**Vaishnavi A Hachadad**
+
+Computer Science & Engineering — AI & ML
+
+Siddaganga Institute of Technology, Tumakuru
+
+---
+
+# ⭐ If You Like This Project
+
+If you found **TaskPulse** useful or interesting, consider giving the repository a ⭐ on GitHub!
+
+---
+
+## 📄 License
+
+This project is intended for educational, portfolio, and demonstration purposes.
